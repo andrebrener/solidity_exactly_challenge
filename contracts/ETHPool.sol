@@ -39,7 +39,7 @@ contract ETHPool is Ownable, ReentrancyGuard {
 
         totalDeposited = totalDeposited + amount;
 
-        balances[depositor] = balances[depositor] + msg.value;
+        balances[depositor] = balances[depositor] + amount;
 
         members.push(depositor);
 
@@ -49,22 +49,19 @@ contract ETHPool is Ownable, ReentrancyGuard {
     function teamDeposit() external payable onlyOwner {
         require(totalDeposited > 0, "There are no deposits");
 
-        uint256 amountDeposited = msg.value;
+        uint256 amount = msg.value;
 
         for (uint256 j = 0; j < members.length; j++) {
             address member = members[j];
 
             uint256 memberDeposits = balances[member];
-            uint256 memberAmount = calculatePercentage(
-                amountDeposited,
-                memberDeposits
-            );
+            uint256 memberAmount = calculatePercentage(amount, memberDeposits);
             balances[member] = balances[member] + memberAmount;
         }
 
-        totalDeposited = totalDeposited + amountDeposited;
+        totalDeposited = totalDeposited + amount;
 
-        emit Deposit(msg.sender, amountDeposited);
+        emit Deposit(msg.sender, amount);
     }
 
     // Withdraw funds
