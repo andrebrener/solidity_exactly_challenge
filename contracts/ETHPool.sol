@@ -71,8 +71,10 @@ contract ETHPool is Ownable, ReentrancyGuard {
         uint256 amount = balances[receiver];
         payable(receiver).sendValue(amount);
 
-        emit Withdraw(receiver, amount);
-
         balances[receiver] = 0;
+
+        totalDeposited = totalDeposited - amount;
+
+        emit Withdraw(receiver, amount);
     }
 }
